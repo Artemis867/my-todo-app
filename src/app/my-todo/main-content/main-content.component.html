@@ -1,0 +1,30 @@
+<h1>My Todo</h1>
+
+<button (click)="toggleCreateTask()">{{ !showCreateTask ? 'Create': 'Cancel'}}</button>
+<div id="add-task-container" [class.hidden]="!showCreateTask">
+  <form
+    [formGroup] = "form"
+    (ngSubmit) = "doAddTask()"
+  >
+    <label for="taskname"></label>
+    <input type="text" name="taskname" id="task-name" formControlName="taskName" value="">
+    <button>Add Task</button>
+  </form>
+</div>
+<ul>
+  <li *ngFor="let taskData of taskList$ | async; let i = index">
+    <span #detailTaskName>{{ taskData.taskName }}</span>
+    <input class="hidden" type="text" value="{{ taskData.taskName }}" #inputTaskName>
+    <span (click)="toggleEditTask(i)" [class.hidden]="showEditTask">Edit</span>&nbsp;
+    <button 
+      [class.hidden]="!showEditTask" 
+      [disabled]="!activeUpdateBtn" 
+      #btnTaskUpdate
+      (click)="doUpdateTask( taskData.id,i)"
+      >Save</button>
+    <span 
+      [class.hidden]="showEditTask"
+      (click) = "doDeleteTask(taskData.id)"
+    >Delete</span>
+  </li>
+</ul>

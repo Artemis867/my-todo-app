@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +14,19 @@ export class TaskService {
   ) { }
 
   getTasks(): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/task`);
+    console.log(environment.apiUrl);
+    return this.http.get<any>(`${environment.apiUrl}/task/all`);
   }
 
   addTask(data: Object): Observable<any> {
-    return this.http.post<any>(`http://localhost:3000/task`, data, {headers: this.headers});
+    return this.http.post<any>(`${environment.apiUrl}/task`, data, {headers: this.headers});
   }
 
   updateTask(id, data: Object): Observable<any> {
-   return this.http.put<any>(`http://localhost:3000/task/${id}`, data, {headers: this.headers}); 
+   return this.http.patch<any>(`${environment.apiUrl}/task/${id}`, data, {headers: this.headers}); 
   }
 
   deleteTask(id): Observable<any> {
-    return this.http.delete<any>(`http://localhost:3000/task/${id}`);
+    return this.http.delete<any>(`${environment.apiUrl}/task/${id}`);
   }
 }

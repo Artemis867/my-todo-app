@@ -1,30 +1,57 @@
-<h1>My Todo</h1>
-
-<button (click)="toggleCreateTask()">{{ !showCreateTask ? 'Create': 'Cancel'}}</button>
-<div id="add-task-container" [class.hidden]="!showCreateTask">
-  <form
-    [formGroup] = "form"
-    (ngSubmit) = "doAddTask()"
-  >
-    <label for="taskname"></label>
-    <input type="text" name="taskname" id="task-name" formControlName="taskName" value="">
-    <button>Add Task</button>
-  </form>
+<div class="container .title-create-form-container">
+  <div class="row">
+    <div class="col-lg-12 col-xs-12">
+      <h1>My <span id="todo-orange-bg">Todo</span></h1>
+      <div class="flex-container">
+        <div class="btn-create-container">
+          <button class="btn-create" (click)="toggleCreateTask()">{{ !showCreateTask ? 'Create': 'Cancel'}}
+            <fa-icon [icon]="faPlus"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="flex-container">
+        <div id="add-task-container" [class.hidden]="!showCreateTask">
+          <form
+            [formGroup] = "form"
+            (ngSubmit) = "doAddTask()"
+          >
+            <label for="taskname"></label>
+            <input type="text" name="taskname" id="task-name" formControlName="taskName" value="" autocomplete="off" placeholder="Type here ..">
+            <br/>
+            <button>Add task</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<ul>
-  <li *ngFor="let taskData of taskList$ | async; let i = index">
-    <span #detailTaskName>{{ taskData.taskName }}</span>
-    <input class="hidden" type="text" value="{{ taskData.taskName }}" #inputTaskName>
-    <span (click)="toggleEditTask(i)" [class.hidden]="showEditTask">Edit</span>&nbsp;
-    <button 
-      [class.hidden]="!showEditTask" 
-      [disabled]="!activeUpdateBtn" 
-      #btnTaskUpdate
-      (click)="doUpdateTask( taskData.id,i)"
-      >Save</button>
-    <span 
-      [class.hidden]="showEditTask"
-      (click) = "doDeleteTask(taskData.id)"
-    >Delete</span>
-  </li>
-</ul>
+<div *ngIf="taskList$ | async as task" class="container task-list-container">
+  <div id="task-list" class="flex-container">
+    <div class="col-task-container">
+      <div *ngFor="let taskData of task.data; let i = index" class="col-task">
+        <div class="flex-col-task-container">
+          <div class="col-task-name-contain" #detailTaskName>
+            {{ taskData.taskName }}
+          </div>
+          <div class="flex-task-input">
+            <input class="hidden" type="text" value="{{ taskData.taskName }}" #inputTaskName>
+          </div>
+          <div class="col-task-actions">
+            <span (click)="toggleEditTask(i)" [class.hidden]="showEditTask">
+              <fa-icon [icon]="faPenSquare"></fa-icon>
+            </span>
+            <span [class.hidden]="showEditTask" (click) = "doDeleteTask(taskData._id)">
+              <fa-icon [icon]="faMinusSquare"></fa-icon>
+            </span>
+            <button 
+              [class.hidden]="!showEditTask" 
+              [disabled]="!activeUpdateBtn" 
+              #btnTaskUpdate
+              (click)="doUpdateTask( taskData._id,i)"
+            >Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

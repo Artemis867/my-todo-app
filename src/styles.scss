@@ -1,4 +1,50 @@
 /* You can add global styles to this file, and also import other style files */
+// main bg color
+@import "assets/main.scss";
+
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #2c2c2c; 
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #ffffff; 
+    border-radius: 10px;
+  }
+
+body {
+    background-color: $main-bg-color;
+    color: $main-text-color;
+    font-family: 'Roboto', sans-serif;
+
+    h1{
+        font-weight: 400;
+        text-align: center;
+    }
+
+    // remove button default styling
+    button {
+        font-size: 100%;
+        font-family: inherit;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        color: $main-text-color;
+    }
+
+    #todo-orange-bg {
+        background-color: #FFA31A;
+        color: #000000;
+        font-weight: 900;
+        padding: 3px 5px 3px 5px;
+        border-radius: 3px;
+    }
+}
 .hidden {
     display: none;
 }

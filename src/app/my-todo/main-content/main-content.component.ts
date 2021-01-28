@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { TaskList } from '../models/task.model';
 import { TaskService } from '../services/task.service';
+import { faMinusSquare, faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-main-content',
@@ -17,6 +18,13 @@ export class MainContentComponent implements OnInit {
   showEditTask: Boolean;
   activeUpdateBtn: Boolean;
   activeInput: String;
+  faPlus = faPlus;
+  faPenSquare = faPenSquare;
+  faMinusSquare = faMinusSquare;
+
+  @ViewChildren('btnTaskUpdate') btnTaskUpdate;
+  @ViewChildren('detailTaskName') detailTaskName;
+  @ViewChildren('inputTaskName') inputTaskName;
 
   constructor(
     private taskService: TaskService,
@@ -37,10 +45,6 @@ export class MainContentComponent implements OnInit {
   toggleCreateTask(): void {
     this.showCreateTask = !this.showCreateTask;
   }
-  
-  @ViewChildren('btnTaskUpdate') btnTaskUpdate;
-  @ViewChildren('detailTaskName') detailTaskName;
-  @ViewChildren('inputTaskName') inputTaskName;
 
   toggleEditTask(i): void {
     this.showEditTask = !this.showEditTask;

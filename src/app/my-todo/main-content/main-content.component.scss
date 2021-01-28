@@ -1,0 +1,116 @@
+@import "../../../assets/main.scss";
+
+
+.flex-container {
+    display: flex;
+    justify-content: center;
+    .btn-create-container {
+        padding-top: 10px;
+        .btn-create {
+            margin: 0 auto;
+            border: 1px solid #ffffff;
+            padding: 5px 70px 5px 70px;
+            transition: all .3s;
+            border-radius: 3px;
+        }
+        
+        .btn-create:hover {
+            color: #000000;
+            background-color: #FFA31A;
+            border: 1px solid $main-bg-color;
+        }
+    }
+
+    #add-task-container {
+        margin-top: 20px;
+        padding: 10px;
+        min-width: 300px;
+
+        #task-name {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 5px;
+            transition: all .2s;
+            color: $main-text-color;
+        }
+
+        #task-name:focus {
+            border-bottom: 1px solid #e6e1e1;
+            outline-width: 0;
+            font-size: 18px;
+        }
+
+        button {
+            font-size: 14px;
+            margin-top: 20px;
+            width: 100%;
+            padding: 8px 10px 8px 10px;
+            font-weight: 100;
+        }
+
+        button:hover {
+            border: 1px solid #929292;
+        }
+    }
+}
+
+#task-list {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    .col-task-container {
+        width: 600px;
+        height: 300px;
+        overflow-y: scroll;
+        padding-left: 3px;
+        padding-right: 3px;
+        .col-task {
+            width: 100%;
+            border: 1px solid #747373;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            padding: 10px;
+            background-color:#292929;
+        }
+    }
+}
+
+.flex-col-task-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    .col-task-name-contain {
+        flex-grow: 1;
+        min-height: 50px;
+    }
+
+    .col-task-actions {
+        width: 120px;
+        min-height: 50px;
+        padding: 10px 10px 10px 30px;
+
+        span {
+            margin-left: 3px;
+            margin-right: 3px;
+            font-size: 24px;
+        }
+    }
+
+    .flex-task-input {
+        flex-grow: 1;
+        input {
+            width: 100%;
+            border: none;
+            border: 1px solid #e6e1e1;
+            border-radius: 20px;
+            padding: 5px;
+        }
+
+        input:focus {
+            outline-width: 0;
+        }
+    }
+}
+

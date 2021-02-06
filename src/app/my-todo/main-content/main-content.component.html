@@ -1,4 +1,8 @@
-<div class="container .title-create-form-container">
+<div class="alert alert-danger" role="alert" *ngIf="alertVisible" [@slideInOut]>
+  {{ validateMsg }}
+</div>
+
+<div class="container title-create-form-container">
   <div class="row">
     <div class="col-lg-12 col-xs-12">
       <h1>My <span id="todo-orange-bg">Todo</span></h1>
@@ -29,6 +33,7 @@
 <div>
   <div *ngIf="taskList$ | async as task else taskListLoader" class="container task-list-container">
     <div id="task-list" class="flex-container">
+      <div *ngIf="task.data.length > 0 else emptyContainer">
       <div class="col-task-container">
         <div *ngFor="let taskData of task.data; let i = index" class="col-task">
           <div class="flex-col-task-container">
@@ -58,8 +63,18 @@
             </div>
           </div>
         </div>
+        </div>
       </div>
     </div>
+    <ng-template #emptyContainer>
+      <div class="empty-container">
+        <div>
+          <fa-icon [icon]="faCalendarTimes"></fa-icon>
+          <br/>
+          nothing to show
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>
 

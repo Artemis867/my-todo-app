@@ -1,5 +1,8 @@
 @import "../../../assets/main.scss";
 
+.title-create-form-container {
+    margin-top: 20px;
+}
 
 .flex-container {
     display: flex;
@@ -127,6 +130,20 @@
         input:focus {
             outline-width: 0;
         }
+    }
+}
+
+.task-list-container {
+    .empty-container {
+        padding-top: 50px;
+        color: #292929;
+
+        div {
+            text-align: center;
+            fa-icon {
+                font-size: 50px;
+            }
+        } 
     }
 }
 

@@ -1,14 +1,28 @@
 import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { TaskList } from '../models/task.model';
 import { TaskService } from '../services/task.service';
-import { faCheckSquare, faMinusSquare, faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarTimes, faCheckSquare, faMinusSquare, faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { trigger, transition, animate, style } from '@angular/animations';
+import { controlNameBinding } from '@angular/forms/src/directives/reactive_directives/form_control_name';
+import { getParseErrors } from '@angular/compiler';
 
 @Component({
   selector: 'app-main-content',
   templateUrl: './main-content.component.html',
-  styleUrls: ['./main-content.component.scss']
+  styleUrls: ['./main-content.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateY(-100%)'}),
+        animate('200ms ease-in', style({transform: 'translateY(0%)'}))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
 })
 export class MainContentComponent implements OnInit {
 
@@ -18,11 +32,14 @@ export class MainContentComponent implements OnInit {
   showEditTask: Boolean;
   activeUpdateBtn: Boolean;
   activeInput: String;
+  alertVisible: Boolean;
+  validateMsg: String | Boolean;
 
   faPlus = faPlus;
   faPenSquare = faPenSquare;
   faMinusSquare = faMinusSquare;
   faCheckSquare = faCheckSquare;
+  faCalendarTimes = faCalendarTimes;
 
   @ViewChildren('btnTaskUpdate') btnTaskUpdate;
   @ViewChildren('detailTaskName') detailTaskName;
@@ -36,13 +53,22 @@ export class MainContentComponent implements OnInit {
   ngOnInit() {
     this.showCreateTask = false;
     this.taskList$ = this.taskService.getTasks();
-
+    this.alertVisible = false;
     this.showEditTask = false;
     this.activeUpdateBtn = false;
+    this.validateMsg = '';
 
     this.form = this.fb.group({
-      taskName: ['']
+      taskName: ['',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(50)
+        ]
+      ]
     });
+
+
   }
 
   toggleCreateTask(): void {
@@ -57,11 +83,21 @@ export class MainContentComponent implements OnInit {
   }
 
   doAddTask(): void {
-    this.taskService.addTask(this.form.value).subscribe( resp => {
-      this.taskList$ = this.taskService.getTasks();
-      this.form.reset();
-      this.showCreateTask = false;
-    });
+    const validated = this.validateTask(this.form.controls);
+
+    if(validated === true) {
+      this.taskService.addTask(this.form.value).subscribe( resp => {
+        this.taskList$ = this.taskService.getTasks();
+        this.form.reset();
+      });
+    } else {
+      this.validateMsg = validated;
+      this.alertVisible = true;
+      
+      setTimeout(() => {
+        this.alertVisible = false;
+      }, 3000);
+    }
   }
 
   doUpdateTask(id ,i): void {
@@ -91,6 +127,31 @@ export class MainContentComponent implements OnInit {
       });
     }
 
+  }
+
+  closeAlert(): void {
+    this.alertVisible = false;
+  }
+
+  validateTask(controls): boolean | string {
+
+    if(controls.taskName.status === 'INVALID') {
+
+      const res = Object.keys(controls.taskName.errors).map( errData => {
+        switch(errData) {
+          case 'required':
+            return 'Adding a task is required.';
+          case 'minlength':
+            return 'Task should be atleast 3 characters.';
+          case 'maxlength':
+            return 'Allowed task should have 50 characters only.';
+        }
+      });
+
+      return res[0];
+    }
+
+    return true;
   }
 
 }

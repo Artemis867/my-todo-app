@@ -30,52 +30,48 @@
   </div>
 </div>
 
-<div>
-  <div *ngIf="taskList$ | async as task else taskListLoader" class="container task-list-container">
-    <div id="task-list" class="flex-container">
-      <div *ngIf="task.data.length > 0 else emptyContainer">
-      <div class="col-task-container">
-        <div *ngFor="let taskData of task.data; let i = index" class="col-task">
-          <div class="flex-col-task-container">
-            <div class="col-task-name-contain" #detailTaskName>
-              <span>added task</span>
-              <br>
-              <div>
-                {{ taskData.taskName }}
-              </div>
-            </div>
-            <div class="flex-task-input">
-              <input class="hidden" type="text" value="{{ taskData.taskName }}" #inputTaskName>
-            </div>
-            <div class="col-task-actions">
-              <span (click)="toggleEditTask(i)" [class.hidden]="showEditTask">
-                <fa-icon [icon]="faPenSquare"></fa-icon>
-              </span>
-              <span [class.hidden]="showEditTask" (click) = "doDeleteTask(taskData._id)">
-                <fa-icon [icon]="faCheckSquare"></fa-icon>
-              </span>
-              <button 
-                [class.hidden]="!showEditTask" 
-                [disabled]="!activeUpdateBtn" 
-                #btnTaskUpdate
-                (click)="doUpdateTask( taskData._id,i)"
-              >Save</button>
+<div *ngIf="taskList$ | async as task else taskListLoader" class="container task-list-container">
+  <div id="task-list" class="flex-container" *ngIf="task.data.length > 0 else emptyContainer">
+    <div class="col-task-container">
+      <div *ngFor="let taskData of task.data; let i = index" class="col-task">
+        <div class="flex-col-task-container">
+          <div class="col-task-name-contain" #detailTaskName>
+            <span>added task</span>
+            <br>
+            <div>
+              {{ taskData.taskName }}
             </div>
           </div>
+          <div class="flex-task-input">
+            <input class="hidden" type="text" value="{{ taskData.taskName }}" #inputTaskName>
+          </div>
+          <div class="col-task-actions">
+            <span (click)="toggleEditTask(i)" [class.hidden]="showEditTask">
+              <fa-icon [icon]="faPenSquare"></fa-icon>
+            </span>
+            <span [class.hidden]="showEditTask" (click) = "doDeleteTask(taskData._id)">
+              <fa-icon [icon]="faCheckSquare"></fa-icon>
+            </span>
+            <button 
+              [class.hidden]="!showEditTask" 
+              [disabled]="!activeUpdateBtn" 
+              #btnTaskUpdate
+              (click)="doUpdateTask( taskData._id,i)"
+            >Save</button>
+          </div>
         </div>
-        </div>
+      </div>
+      </div>
+  </div>
+  <ng-template #emptyContainer>
+    <div class="empty-container">
+      <div>
+        <fa-icon [icon]="faCalendarTimes"></fa-icon>
+        <br/>
+        nothing to show
       </div>
     </div>
-    <ng-template #emptyContainer>
-      <div class="empty-container">
-        <div>
-          <fa-icon [icon]="faCalendarTimes"></fa-icon>
-          <br/>
-          nothing to show
-        </div>
-      </div>
-    </ng-template>
-  </div>
+  </ng-template>
 </div>
 
 <ng-template #taskListLoader>

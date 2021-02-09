@@ -119,6 +119,7 @@
 
     .flex-task-input {
         flex-grow: 1;
+        padding-top: 3px;
         input {
             width: 100%;
             border: none;
@@ -147,3 +148,14 @@
     }
 }
 
+.alert-warning {
+    background-color: #FFA31A;
+    border: none;
+    color: #000000;
+}
+
+.alert-success {
+    background-color:#5cb85c;
+    border: none;
+    color: $main-text-color;
+}

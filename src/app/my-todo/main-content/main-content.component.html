@@ -1,5 +1,11 @@
-<div class="alert alert-danger" role="alert" *ngIf="alertVisible" [@slideInOut]>
-  {{ validateMsg }}
+<div class="alert"
+ [class.alert-success] = "notifySuccess"
+ [class.alert-warning] = "notifyFailed" 
+ role="alert"
+ *ngIf="alertVisible" [@slideInOut]>
+   <fa-icon *ngIf="notifyFailed" [icon]="faExclamationTriangle"></fa-icon>
+   <fa-icon *ngIf="notifySuccess" [icon]="faCheckCircle"></fa-icon>
+    {{ validateMsg }}
 </div>
 
 <div class="container title-create-form-container">

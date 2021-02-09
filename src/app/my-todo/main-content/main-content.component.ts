@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { TaskList } from '../models/task.model';
 import { TaskService } from '../services/task.service';
-import { faCalendarTimes, faCheckSquare, faMinusSquare, faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarTimes, faCheckCircle, faCheckSquare,
+    faExclamationTriangle, faMinusSquare,
+    faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { trigger, transition, animate, style } from '@angular/animations';
-import { controlNameBinding } from '@angular/forms/src/directives/reactive_directives/form_control_name';
-import { getParseErrors } from '@angular/compiler';
 
 @Component({
   selector: 'app-main-content',
@@ -35,12 +35,17 @@ export class MainContentComponent implements OnInit {
   alertVisible: Boolean;
   validateMsg: String | Boolean;
   inputTask: any;
+  notifySuccess: Boolean;
+  notifyFailed: Boolean;
 
+  // fontawesome icons
   faPlus = faPlus;
   faPenSquare = faPenSquare;
   faMinusSquare = faMinusSquare;
   faCheckSquare = faCheckSquare;
   faCalendarTimes = faCalendarTimes;
+  faExclamationTriangle = faExclamationTriangle;
+  faCheckCircle = faCheckCircle;
 
   @ViewChildren('btnTaskUpdate') btnTaskUpdate;
   @ViewChildren('detailTaskName') detailTaskName;
@@ -88,11 +93,14 @@ export class MainContentComponent implements OnInit {
 
     if(validated === true) {
       this.taskService.addTask(this.form.value).subscribe( resp => {
+        const msg = 'Task Added!';
         this.taskList$ = this.taskService.getTasks();
         this.form.reset();
+
+        this.alertValidate(msg, true);
       });
     } else {
-      this.alertValidate(validated);
+      this.alertValidate(validated, false);
     }
   }
 
@@ -106,6 +114,7 @@ export class MainContentComponent implements OnInit {
       };
 
       this.taskService.updateTask(id, inputValue).subscribe(resp => {
+        const msg = 'Task updated!';
         this.taskList$ = this.taskService.getTasks();
         this.showEditTask = !this.showEditTask;
         this.btnTaskUpdate.toArray()[i].nativeElement.disabled = true;
@@ -113,9 +122,11 @@ export class MainContentComponent implements OnInit {
         if(!this.showEditTask) {
           this.inputTaskName.toArray()[i].nativeElement.classList.add('hidden');
         }
+        
+        this.alertValidate(msg, true);
       });
     } else {
-      this.alertValidate(validated);
+      this.alertValidate(validated, false);
     }
 
   }
@@ -156,10 +167,15 @@ export class MainContentComponent implements OnInit {
     return true;
   }
 
-  alertValidate(validated): void {
+  alertValidate(validated, success: boolean): void {
     this.validateMsg = validated;
     this.alertVisible = true;
-    
+
+    if (success) {
+      this.notifySuccess = true;
+    } else {
+      this.notifyFailed = true;
+    }
     setTimeout(() => {
       this.alertVisible = false;
     }, 3000);

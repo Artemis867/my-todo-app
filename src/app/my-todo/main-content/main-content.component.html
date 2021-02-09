@@ -22,7 +22,7 @@
             <label for="taskname"></label>
             <input type="text" name="taskname" id="task-name" formControlName="taskName" value="" autocomplete="off" placeholder="Type here ..">
             <br/>
-            <button>Add task</button>
+            <button *ngIf="!showEditTask">Add task</button>
           </form>
         </div>
       </div>
@@ -53,8 +53,7 @@
               <fa-icon [icon]="faCheckSquare"></fa-icon>
             </span>
             <button 
-              [class.hidden]="!showEditTask" 
-              [disabled]="!activeUpdateBtn" 
+              [class.hidden]="!showEditTask || !activeUpdateBtn"
               #btnTaskUpdate
               (click)="doUpdateTask( taskData._id,i)"
             >Save</button>

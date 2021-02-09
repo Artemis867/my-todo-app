@@ -34,6 +34,7 @@ export class MainContentComponent implements OnInit {
   activeInput: String;
   alertVisible: Boolean;
   validateMsg: String | Boolean;
+  inputTask: any;
 
   faPlus = faPlus;
   faPenSquare = faPenSquare;
@@ -77,7 +78,7 @@ export class MainContentComponent implements OnInit {
 
   toggleEditTask(i): void {
     this.showEditTask = !this.showEditTask;
-    this.btnTaskUpdate.toArray()[i].nativeElement.disabled = false;
+    this.btnTaskUpdate.toArray()[i].nativeElement.classList.remove('hidden');
     this.inputTaskName.toArray()[i].nativeElement.classList.remove('hidden');
     this.detailTaskName.toArray()[i].nativeElement.classList.add('hidden');
   }
@@ -91,29 +92,31 @@ export class MainContentComponent implements OnInit {
         this.form.reset();
       });
     } else {
-      this.validateMsg = validated;
-      this.alertVisible = true;
-      
-      setTimeout(() => {
-        this.alertVisible = false;
-      }, 3000);
+      this.alertValidate(validated);
     }
   }
 
   doUpdateTask(id ,i): void {
-    const inputValue = {
-      taskName: this.inputTaskName.toArray()[i].nativeElement.value
-    };
+    this.inputTask = this.inputTaskName.toArray()[i].nativeElement.value;
+    const validated = this.customValidate( this.inputTask);
 
-    this.taskService.updateTask(id, inputValue).subscribe(resp => {
-      this.taskList$ = this.taskService.getTasks();
-      this.showEditTask = !this.showEditTask;
-      this.btnTaskUpdate.toArray()[i].nativeElement.disabled = true;
-      this.detailTaskName.toArray()[i].nativeElement.classList.remove('hidden');
-      if(!this.showEditTask) {
-        this.inputTaskName.toArray()[i].nativeElement.classList.add('hidden');
-      }
-    });
+    if(validated === true) {
+      const inputValue = {
+        taskName: this.inputTaskName.toArray()[i].nativeElement.value
+      };
+
+      this.taskService.updateTask(id, inputValue).subscribe(resp => {
+        this.taskList$ = this.taskService.getTasks();
+        this.showEditTask = !this.showEditTask;
+        this.btnTaskUpdate.toArray()[i].nativeElement.disabled = true;
+        this.detailTaskName.toArray()[i].nativeElement.classList.remove('hidden');
+        if(!this.showEditTask) {
+          this.inputTaskName.toArray()[i].nativeElement.classList.add('hidden');
+        }
+      });
+    } else {
+      this.alertValidate(validated);
+    }
 
   }
 
@@ -134,7 +137,6 @@ export class MainContentComponent implements OnInit {
   }
 
   validateTask(controls): boolean | string {
-
     if(controls.taskName.status === 'INVALID') {
 
       const res = Object.keys(controls.taskName.errors).map( errData => {
@@ -152,6 +154,29 @@ export class MainContentComponent implements OnInit {
     }
 
     return true;
+  }
+
+  alertValidate(validated): void {
+    this.validateMsg = validated;
+    this.alertVisible = true;
+    
+    setTimeout(() => {
+      this.alertVisible = false;
+    }, 3000);
+  }
+
+
+  // this is temporary solution, think other ways to improve this
+  customValidate(value) : String | Boolean {
+      if(value === '' || value === undefined) {
+        return 'Adding a task is required.';
+      } else if (value.length < 3) {
+        return 'Task should be atleast 3 characters.';
+      } else if (value.length > 50) {
+        return 'Allowed task should have 50 characters only.';
+      } else {
+        return true;
+      }
   }
 
 }

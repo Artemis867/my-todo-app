@@ -173,8 +173,10 @@ export class MainContentComponent implements OnInit {
 
     if (success) {
       this.notifySuccess = true;
+      this.notifyFailed = false;
     } else {
       this.notifyFailed = true;
+      this.notifySuccess = false;
     }
     setTimeout(() => {
       this.alertVisible = false;

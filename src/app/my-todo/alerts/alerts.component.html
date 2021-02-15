@@ -1,0 +1,17 @@
+<div class="alert flex-alert-container"
+ [class.alert-success] = "notifySuccess"
+ [class.alert-warning] = "notifyFailed || notifyConfirm"
+ role="alert"
+ *ngIf="alertVisible" [@slideInOut]>
+    <div class="alert-label">
+        <fa-icon *ngIf="notifyFailed" [icon]="faExclamationTriangle"></fa-icon>
+        <fa-icon *ngIf="notifySuccess" [icon]="faCheckCircle"></fa-icon>
+        <fa-icon *ngIf="notifyConfirm" [icon]="faQuestionCircle"></fa-icon>
+        {{ validateMsg }}
+    </div>
+
+    <div class="confirm-action-container" *ngIf="notifyConfirm">
+        <span (click)="callParent(taskId)">Yes</span> &nbsp;
+        <span>No</span>
+    </div>
+</div>

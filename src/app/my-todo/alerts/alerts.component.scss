@@ -1,0 +1,21 @@
+@import "../../../assets/main.scss";
+
+.alert-warning {
+    background-color: #FFA31A;
+    border: none;
+    color: #000000;
+}
+
+.alert-success {
+    background-color:#5cb85c;
+    border: none;
+    color: $main-text-color;
+}
+
+.flex-alert-container {
+    display: flex;
+
+    .alert-label {
+        flex-grow: 1;
+    }
+}

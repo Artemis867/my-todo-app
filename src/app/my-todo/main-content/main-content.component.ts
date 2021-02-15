@@ -7,22 +7,17 @@ import { faCalendarTimes, faCheckCircle, faCheckSquare,
     faExclamationTriangle, faMinusSquare,
     faPenSquare, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { trigger, transition, animate, style } from '@angular/animations';
+import { AlertsComponent } from '../alerts/alerts.component';
+
+
+const MSG_REQUIRED = 'Adding task is required.';
+const MSG_MIN_LENGTH = 'Task should be minimum of 3 characters.';
+const MSG_MAX_LENGTH = 'Maximum character of task should be below 50.';
 
 @Component({
   selector: 'app-main-content',
   templateUrl: './main-content.component.html',
-  styleUrls: ['./main-content.component.scss'],
-  animations: [
-    trigger('slideInOut', [
-      transition(':enter', [
-        style({transform: 'translateY(-100%)'}),
-        animate('200ms ease-in', style({transform: 'translateY(0%)'}))
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({transform: 'translateY(-100%)'}))
-      ])
-    ])
-  ]
+  styleUrls: ['./main-content.component.scss']
 })
 export class MainContentComponent implements OnInit {
 
@@ -35,6 +30,11 @@ export class MainContentComponent implements OnInit {
   alertVisible: Boolean;
   validateMsg: String | Boolean;
   inputTask: any;
+  msgRequired: String;
+  msgMinLength: String;
+  msgMaxLength: String;
+  msgStatus: String;
+  alertMsg: String;
   notifySuccess: Boolean;
   notifyFailed: Boolean;
 
@@ -44,12 +44,11 @@ export class MainContentComponent implements OnInit {
   faMinusSquare = faMinusSquare;
   faCheckSquare = faCheckSquare;
   faCalendarTimes = faCalendarTimes;
-  faExclamationTriangle = faExclamationTriangle;
-  faCheckCircle = faCheckCircle;
-
+  
   @ViewChildren('btnTaskUpdate') btnTaskUpdate;
   @ViewChildren('detailTaskName') detailTaskName;
   @ViewChildren('inputTaskName') inputTaskName;
+  @ViewChild(AlertsComponent) childAlert: AlertsComponent;
 
   constructor(
     private taskService: TaskService,
@@ -59,10 +58,11 @@ export class MainContentComponent implements OnInit {
   ngOnInit() {
     this.showCreateTask = false;
     this.taskList$ = this.taskService.getTasks();
-    this.alertVisible = false;
     this.showEditTask = false;
     this.activeUpdateBtn = false;
     this.validateMsg = '';
+
+    this.alertVisible = false;
 
     this.form = this.fb.group({
       taskName: ['',
@@ -97,10 +97,10 @@ export class MainContentComponent implements OnInit {
         this.taskList$ = this.taskService.getTasks();
         this.form.reset();
 
-        this.alertValidate(msg, true);
+        this.childAlert.alertValidate(msg, true);
       });
     } else {
-      this.alertValidate(validated, false);
+      this.childAlert.alertValidate(validated, false, true);
     }
   }
 
@@ -123,41 +123,42 @@ export class MainContentComponent implements OnInit {
           this.inputTaskName.toArray()[i].nativeElement.classList.add('hidden');
         }
         
-        this.alertValidate(msg, true);
+        this.childAlert.alertValidate(msg, true);
       });
     } else {
-      this.alertValidate(validated, false);
+      this.childAlert.alertValidate(validated, false, true);
     }
 
   }
 
   doDeleteTask(id): void {
     const confirmDeleteTxt = 'Are you sure you want to delete this task';
-    const confirmDelete = window.confirm(confirmDeleteTxt);
+    this.childAlert.alertConfirm(id);
+  }
 
-    if(confirmDelete) {
+  doDelete(id): void {
+    if(id) {
       this.taskService.deleteTask(id).subscribe(resp => {
         this.taskList$ = this.taskService.getTasks();
       });
     }
-
   }
 
   closeAlert(): void {
     this.alertVisible = false;
   }
 
-  validateTask(controls): boolean | string {
+  validateTask(controls): Boolean | String {
     if(controls.taskName.status === 'INVALID') {
 
       const res = Object.keys(controls.taskName.errors).map( errData => {
         switch(errData) {
           case 'required':
-            return 'Adding a task is required.';
+            return MSG_REQUIRED;
           case 'minlength':
-            return 'Task should be atleast 3 characters.';
+            return MSG_MIN_LENGTH;
           case 'maxlength':
-            return 'Allowed task should have 50 characters only.';
+            return MSG_MAX_LENGTH;
         }
       });
 
@@ -167,31 +168,14 @@ export class MainContentComponent implements OnInit {
     return true;
   }
 
-  alertValidate(validated, success: boolean): void {
-    this.validateMsg = validated;
-    this.alertVisible = true;
-
-    if (success) {
-      this.notifySuccess = true;
-      this.notifyFailed = false;
-    } else {
-      this.notifyFailed = true;
-      this.notifySuccess = false;
-    }
-    setTimeout(() => {
-      this.alertVisible = false;
-    }, 3000);
-  }
-
-
   // this is temporary solution, think other ways to improve this
   customValidate(value) : String | Boolean {
       if(value === '' || value === undefined) {
-        return 'Adding a task is required.';
+        return MSG_REQUIRED;
       } else if (value.length < 3) {
-        return 'Task should be atleast 3 characters.';
+        return MSG_MIN_LENGTH;
       } else if (value.length > 50) {
-        return 'Allowed task should have 50 characters only.';
+        return MSG_MAX_LENGTH;
       } else {
         return true;
       }

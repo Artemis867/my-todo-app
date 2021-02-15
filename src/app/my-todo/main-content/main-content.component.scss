@@ -70,7 +70,7 @@
     margin-top: 20px;
     .col-task-container {
         width: 600px;
-        height: 300px;
+        height: 380px;
         overflow-y: scroll;
         padding-left: 3px;
         padding-right: 3px;
@@ -146,16 +146,4 @@
             }
         } 
     }
-}
-
-.alert-warning {
-    background-color: #FFA31A;
-    border: none;
-    color: #000000;
-}
-
-.alert-success {
-    background-color:#5cb85c;
-    border: none;
-    color: $main-text-color;
 }
